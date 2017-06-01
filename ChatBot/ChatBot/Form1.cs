@@ -34,6 +34,13 @@ namespace ChatBot
         List<string> Afirmaciones = new List<string>(new string[]
         { "Si", "si", "Si!", "si!", "Simon", "simon", "Simon!"
         });
+        List<string> Despedidas = new List<string>(new string[]
+        {
+            "Adios", "adios", "nos vemos", "Adios!", "adios!", "Salu", "salu", "Hasta pronto", "hasta pronto",
+            "hasta luego", "Hasta luego", "Hasta luego!", "hasta luego!"
+        });
+        double Numero1;
+        double Numero2;
         public frmPrincipal()
         {
             InitializeComponent();
@@ -51,6 +58,57 @@ namespace ChatBot
         private void btnSend_Click(object sender, EventArgs e)
         {
             txtChat.Text += username + ": " + txtMessage.Text + "\r\n";
+            if (Despedidas.Contains(txtMessage.Text))
+            {
+                Close();
+            }
+            if (control > 11 && control < 16)
+            {
+                if (!double.TryParse(txtMessage.Text, out Numero2))
+                {
+                    txtChat.Text += botName + ": Ese no es un numero, intenta denuevo.\r\n";
+                }
+                else
+                {
+                    if (control - 8 == 4) //Suma
+                    {
+                        txtChat.Text += botName + ": Bien, la suma de " + Numero1 + " + " + Numero2 + " es: " + (Numero1 + Numero2) + "\r\n";
+                        control = 0;
+                    }
+                    else if (control - 8 == 5) //Resta
+                    {
+                        txtChat.Text += botName + ": Bien, la resta de " + Numero1 + " - " + Numero2 + " es: " + (Numero1 - Numero2) + "\r\n";
+                        control = 0;
+                    }
+                    else if (control - 8 == 6) //Multiplicacion
+                    {
+                        txtChat.Text += botName + ": Bien, la multiplicacion de " + Numero1 + " * " + Numero2 + " es: " + (Numero1 * Numero2) + "\r\n";
+                        control = 0;
+                    }
+                    else if (control - 8 == 7) //Division
+                    {
+                        if (Numero2 != 0)
+                            txtChat.Text += botName + ": Bien, la division de " + Numero1 + " / " + Numero2 + " es: " + (Numero1 / Numero2) + "\r\n";
+                        else
+                            txtChat.Text += botName + ": Lo siento, la division entre cero no esta en mi programación.\r\n";
+                        control = 0;
+                    }
+                    txtMessage.Clear();
+                    return;
+                }
+            }
+            if (control > 7 && control < 12)
+            {
+                if (!double.TryParse(txtMessage.Text, out Numero1))
+                {
+                    txtChat.Text += botName + ": Ese no es un numero, intenta denuevo.\r\n";
+                }
+                else
+                {
+                    txtChat.Text += botName + ": Bien, Digita ahora el segundo numero.\r\n";
+                    control += 4;
+                }
+            }
             if (control == 3)
             {
                 if (ListaOperaciones.Contains(txtMessage.Text))
@@ -67,6 +125,8 @@ namespace ChatBot
                                 control = 6;
                             else if (x < 16)
                                 control = 7;
+                            txtChat.Text += "Ok! coloca los primeros dos números.\r\n";
+                            control += 4;
                             break;
                         }
                     }
@@ -83,6 +143,13 @@ namespace ChatBot
                     txtChat.Text += botName + ": Que operación deseas realizar? \r\n";
                     control = 3;
                 }
+                else
+                {
+                    txtChat.Text += botName + ": Oh bueno... :( si necesitas algo me avisas\r\n";
+                    control = 0;
+                    txtMessage.Clear();
+                    return;
+                }
             }
             if (control == 1)
             {
@@ -94,12 +161,22 @@ namespace ChatBot
             {
                 if (Saludos.Contains(txtMessage.Text))
                 {
-                    txtChat.Text += "PC: " + txtMessage.Text + ", me llamo " + botName + " como te llamas tu?" + "\r\n";
+                    txtChat.Text += botName + ": " + txtMessage.Text + ", me llamo " + botName + " como te llamas tu?" + "\r\n";
                     control = 1;
                 }
-
+                else
+                {
+                    txtChat.Text += botName + ": Interesante... te interesa realizar alguna operación?\r\n";
+                    control = 2;
+                }
             }
             txtMessage.Clear();
+        }
+
+        private void txtChat_TextChanged(object sender, EventArgs e)
+        {
+            txtChat.SelectionStart = txtChat.Text.Length;
+            txtChat.ScrollToCaret();
         }
 
         private void txtMessage_KeyPress(object sender, KeyPressEventArgs e)
